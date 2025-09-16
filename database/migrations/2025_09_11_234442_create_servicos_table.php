@@ -17,12 +17,12 @@ return new class extends Migration
             $table->longText('resumo');
             $table->longText('profissoes');
             $table->integer('qtd_vagas');
-            $table->decimal('valor_minimo', 10, 2);
-            $table->decimal('valor_maximo', 10 ,2);
+            $table->decimal('valor_minimo', 10, 2)->nullable();
+            $table->decimal('valor_maximo', 10 ,2)->nullable();
             $table->date('data_prevista_entrega')->nullable();
             $table->date('data_maxima_entrega')->nullable();
-            $table->integer('status');
-            $table->boolean('ativo');
+            $table->integer('status')->default(1)->comment("1 - Anunciada, 2 - Iniciada, 3 - Fase de Pagamento, 4 - Concluída");
+            $table->boolean('ativo')->default(true);
             $table->timestamps();
         });
     }

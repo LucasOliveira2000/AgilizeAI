@@ -8,31 +8,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
-class Servico extends Model
+class PropostaServico extends Model
 {
     use Notifiable, HasFactory;
 
     protected $fillable = [
         'user_id',
-        'titulo',
-        'tags_padroes',
+        'servico_id',
         'resumo',
-        'profissoes',
-        'qtd_vagas',
-        'valor_minimo',
-        'valor_maximo',
-        'data_prevista_entrega',
-        'data_maxima_entrega',
+        'valor_contra_proposta',
         'status',
         'ativo'
     ];
 
     protected $casts = [
-        'data_prevista_entrega' => 'date',
-        'data_maxima_entrega'   => 'date',
-        'ativo'                 => 'boolean',
-        'valor_minimo'          => 'decimal:2',
-        'valor_maximo'          => 'decimal:2'
+        'valor_contra_proposta'  => 'decimal:2'
     ];
 
     public function user(): BelongsTo
@@ -40,8 +30,8 @@ class Servico extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function proposta_servicos(): HasMany
+    public function servico(): BelongsTo
     {
-        return $this->hasMany(PropostaServico::class);
+        return $this->belongsTo(Servico::class);
     }
 }

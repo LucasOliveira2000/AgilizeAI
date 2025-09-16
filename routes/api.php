@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PropostaServicoController;
 use App\Http\Controllers\ServicoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -22,5 +23,13 @@ Route::controller(UserController::class)->prefix('user')->group(function(){
 Route::middleware('auth:sanctum')->controller(ServicoController::class)->prefix('service')->group(function(){
     Route::get('/index', 'index')->name('service.index');
     Route::get('/show/{id}', 'show')->name('service.show');
+    Route::get('/proposalService/{service_id}', 'proposalService')->name('proposta_servico.proposalService');
     Route::post('/register', 'register')->name('service.register');
 });
+
+Route::middleware('auth:sanctum')->controller(PropostaServicoController::class)->prefix('proposal_service')->group(function(){
+    Route::get('/index', 'index')->name('proposta_servico.index');
+    Route::get('/show/{id}', 'show')->name('proposta_servico.show');
+    Route::post('/register', 'register')->name('proposta_servico.register');
+});
+

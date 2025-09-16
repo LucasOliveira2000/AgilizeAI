@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Servico::class);
     }
+
+    public function proposta_servicos(): HasMany
+    {
+        return $this->hasMany(PropostaServico::class);
+    }
 }

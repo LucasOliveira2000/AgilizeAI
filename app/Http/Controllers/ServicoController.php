@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Util;
+use App\Models\PropostaServico;
 use App\Models\Servico;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,7 +39,7 @@ class ServicoController extends Controller
 
         return response()->json([
             'success' => true,
-            'servicos' => $servicos
+            'data' => $servicos
         ]);
     }
 
@@ -84,8 +85,8 @@ class ServicoController extends Controller
 
         return response()->json([
             'success' => true,
-            'servico' => $servico,
-            'message' => 'Serviço registrado com sucesso!'
+            'message' => 'Serviço registrado com sucesso!',
+            'data' => $servico
         ], 201);
     }
 
@@ -102,7 +103,7 @@ class ServicoController extends Controller
 
         return response()->json([
             'success' => true,
-            'servico' => [
+            'data' => [
                 'id'                    => $servico->id,
                 'titulo'                => $servico->titulo,
                 'tags_padroes'          => $servico->tags_padroes,
@@ -147,9 +148,46 @@ class ServicoController extends Controller
 
         return response()->json([
             'success'   => true,
-            'servicos'  => $servicos
+            'data'  => $servicos
         ]);
     }
+
+    public function proposalService($servico_id)
+    {
+        try {
+            $servico = Servico::where('user_id', Auth::id())->where('id', $servico_id)->firstOrFail();
+        }catch(ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Serviço não encontrado ou não pertence a você.'
+            ], 404);
+        }
+
+        $propostas_servico = PropostaServico::where('servico_id', $servico->id)->orderBy("id", "DESC")
+            ->paginate(10)->through(function($proposta){
+                return [
+                    'resumo'                    => $proposta->resumo,
+                    'valor_contra_proposta'     => Util::formataDinheiro($proposta->valor_contra_proposta),
+                    'status'                    => $proposta->status,
+                    'data_enviada'              => Util::formataData($proposta->created_at),
+                    'ativo'                     => $proposta->ativo,
+                    "user"                      => [
+                        "nome"                      => $proposta->user->nome,
+                        "email"                     => $proposta->user->email,
+                        "nivel"                     => $proposta->user->nivel,
+                        "estrela"                   => $proposta->user->estrela,
+                        "profissao_principal"       => $proposta->user->profissao_principal,
+                        "profissoes_extras"         => $proposta->user->profissoes_extras
+                    ]
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $propostas_servico
+        ]);
+    }
+
 
     public function update(Request $request, $id)
     {
