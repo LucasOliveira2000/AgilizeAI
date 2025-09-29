@@ -17,7 +17,9 @@ class UserController extends Controller
 
         return response()->json([
             "success" => true,
-            "data" => $user
+            "data" => [
+                "user" => $user
+            ]
         ]);
     }
 
@@ -95,7 +97,9 @@ class UserController extends Controller
 
         return response()->json([
             "sucess"    => true,
-            "data"      => $user,
+            "data"      => [
+               "user" => $user
+            ],
             "token"     => $token,
             "message"   => "Seja bem vindo ".$user->nome
         ]);
@@ -128,7 +132,9 @@ class UserController extends Controller
 
             return response()->json([
                 "success"   => true,
-                "data"      => $user,
+                "data"      => [
+                    "user" => $user
+                ],
                 "token"     => $token,
                 "message"   => "Seja bem-vindo " . ($user->nome_social ?? $user->nome)
             ]);

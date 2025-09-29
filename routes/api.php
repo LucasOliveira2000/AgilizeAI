@@ -23,6 +23,7 @@ Route::controller(UserController::class)->prefix('user')->group(function(){
 Route::middleware('auth:sanctum')->controller(ServicoController::class)->prefix('service')->group(function(){
     Route::get('/index', 'index')->name('service.index');
     Route::get('/show/{id}', 'show')->name('service.show');
+    Route::get('/myServices', 'myServices')->name('service.myServices');
     Route::get('/proposalService/{service_id}', 'proposalService')->name('proposta_servico.proposalService');
     Route::post('/register', 'register')->name('service.register');
 });

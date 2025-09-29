@@ -39,7 +39,9 @@ class ServicoController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $servicos
+            'data' => [
+                "servicos" => $servicos
+            ]
         ]);
     }
 
@@ -86,7 +88,9 @@ class ServicoController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Serviço registrado com sucesso!',
-            'data' => $servico
+            'data' => [
+                "servico" => $servico
+            ]
         ], 201);
     }
 
@@ -101,29 +105,57 @@ class ServicoController extends Controller
             ], 404);
         }
 
+        if($servico->user_id != Auth::id()){
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id'                    => $servico->id,
+                    'titulo'                => $servico->titulo,
+                    'tags_padroes'          => $servico->tags_padroes,
+                    'resumo'                => $servico->resumo,
+                    'profissoes'            => $servico->profissoes,
+                    'qtd_vagas'             => $servico->qtd_vagas,
+                    'valor_minimo'          => Util::formataDinheiro($servico->valor_minimo),
+                    'valor_maximo'          => Util::formataDinheiro($servico->valor_maximo),
+                    'data_prevista_entrega' => $servico->data_prevista_entrega,
+                    'data_maxima_entrega'   => $servico->data_maxima_entrega,
+                    'status'                => $servico->status,
+                    'ativo'                 => $servico->ativo,
+                    'user'                  => [
+                        "id"    => $servico->user->id,
+                        "nome"  => $servico->user->nome,
+                        "email" => $servico->user->email
+                    ],
+                ]
+            ]);
+        }
+
+        $propostas_servico = PropostaServico::where('servico_id', $servico->id)->orderBy("id", "DESC")
+        ->paginate(10)->through(function($proposta){
+            return [
+                'resumo'                    => $proposta->resumo,
+                'valor_contra_proposta'     => Util::formataDinheiro($proposta->valor_contra_proposta),
+                'status'                    => $proposta->status,
+                'data_enviada'              => Util::formataData($proposta->created_at),
+                'ativo'                     => $proposta->ativo,
+                "user"                      => [
+                    "nome"                      => $proposta->user->nome,
+                    "email"                     => $proposta->user->email,
+                    "nivel"                     => $proposta->user->nivel,
+                    "estrela"                   => $proposta->user->estrela,
+                    "profissao_principal"       => $proposta->user->profissao_principal,
+                    "profissoes_extras"         => $proposta->user->profissoes_extras
+                ]
+            ];
+        });
+
         return response()->json([
             'success' => true,
             'data' => [
-                'id'                    => $servico->id,
-                'titulo'                => $servico->titulo,
-                'tags_padroes'          => $servico->tags_padroes,
-                'resumo'                => $servico->resumo,
-                'profissoes'            => $servico->profissoes,
-                'qtd_vagas'             => $servico->qtd_vagas,
-                'valor_minimo'          => Util::formataDinheiro($servico->valor_minimo),
-                'valor_maximo'          => Util::formataDinheiro($servico->valor_maximo),
-                'data_prevista_entrega' => $servico->data_prevista_entrega,
-                'data_maxima_entrega'   => $servico->data_maxima_entrega,
-                'status'                => $servico->status,
-                'ativo'                 => $servico->ativo,
-                'user'                  => [
-                    "id"    => $servico->user->id,
-                    "nome"  => $servico->user->nome,
-                    "email" => $servico->user->email
-                ],
+                "servico"           => $servico,
+                "propostas_servico" => $propostas_servico
             ]
         ]);
-
     }
 
     public function myServices()
@@ -148,7 +180,9 @@ class ServicoController extends Controller
 
         return response()->json([
             'success'   => true,
-            'data'  => $servicos
+            'data'  => [
+                "servico" => $servicos
+            ]
         ]);
     }
 
@@ -184,7 +218,9 @@ class ServicoController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $propostas_servico
+            'data' => [
+                "propostas_servico" => $propostas_servico
+            ]
         ]);
     }
 
