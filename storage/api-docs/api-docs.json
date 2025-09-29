@@ -1,0 +1,155 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "AgilizeAi API",
+        "description": "Documentação da API do AgilizeAi",
+        "contact": {
+            "email": "agilizeai@agilizeai.com.br"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Servidor da API"
+        }
+    ],
+    "paths": {
+        "/api/user/profile": {
+            "get": {
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Retorna o perfil do usuário autenticado",
+                "operationId": "57589d5f2b96c15a5f0b5e555fe5bcb2",
+                "responses": {
+                    "200": {
+                        "description": "Perfil retornado com sucesso"
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/register": {
+            "post": {
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Registra um novo usuário",
+                "operationId": "83bcc34ce88987f02abd276202daabdd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Lucas Oliveira"
+                                    },
+                                    "cpf": {
+                                        "type": "string",
+                                        "example": "12345678901"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "lucas@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Senha123!"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "Senha123!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuário registrado com sucesso"
+                    },
+                    "422": {
+                        "description": "Validação falhou"
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Login do usuário",
+                "operationId": "9ef9ad7a81dcd16aaa2aca8526e89418",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "lucas@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "SenhaForte@123!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
+        "/api/user/logout": {
+            "post": {
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Logout do usuário",
+                "operationId": "857fcb9741d2e989396f97907a38ca3d",
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado com sucesso"
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Usuários",
+            "description": "Operações relacionadas a usuários"
+        }
+    ]
+}
