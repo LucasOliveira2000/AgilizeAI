@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->controller(ServicoController::class)->prefix(
 });
 
 Route::middleware('auth:sanctum')->controller(PropostaServicoController::class)->prefix('proposal_service')->group(function(){
-    Route::get('/index', 'index')->name('proposta_servico.index');
+    Route::get('/myProposals', 'myProposals')->name('proposta_servico.myProposals');
     Route::get('/show/{id}', 'show')->name('proposta_servico.show');
     Route::post('/register', 'register')->name('proposta_servico.register');
 });

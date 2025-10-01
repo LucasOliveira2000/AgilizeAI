@@ -32,7 +32,8 @@ class ServicoController extends Controller
                 'data_criado'           => Util::formataData($servico->created_at),
                 'user'  => [
                     'id'    => $servico->user->id,
-                    'nome'  => $servico->user->nome
+                    'nome'  => $servico->user->nome,
+                    'email' => $servico->user->email
                 ],
             ];
         });
