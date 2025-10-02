@@ -94,9 +94,8 @@ class UserController extends Controller
             'password'            => Hash::make($request->password),
         ]);
 
-        $token = $user->createToken('api-token')->plainTextToken;
-
         dispatch(new UserRegisterJob($user));
+        $request->session()->regenerate();
 
         return response()->json([
             "sucess"    => true,
@@ -111,41 +110,25 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email'         => 'required|email',
-            'password'      => 'required'
-        ], [
-            'email.required'    => 'O e-mail é obrigatório.',
-            'email.email'       => 'O e-mail deve ser válido.',
-            'password.required' => 'A senha é obrigatória.',
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
-
-            // if ($user->tokens()->count() > 0) {
-
-            //     return response()->json([
-            //         "success"   => false,
-            //         "user"      => $user,
-            //         "message"   => "Você já está logado " . ($user->nome_social ?? $user->nome)
-            //     ], 403);
-            // }
-
-            $token = $user->createToken('api-token')->plainTextToken;
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
 
             return response()->json([
-                "success"   => true,
-                "data"      => [
-                    "user" => $user
+                'success' => true,
+                'data' => [
+                   "user" =>  Auth::user()
                 ],
-                "token"     => $token,
-                "message"   => "Seja bem-vindo " . ($user->nome_social ?? $user->nome)
+                'message' => 'Seja bem vindo ' . (Auth::user()->nome_social ?? Auth::user()->nome),
             ]);
         }
 
         return response()->json([
-            "success" => false,
-            "message" => "Email ou senha incorretos"
+            'success' => false,
+            'message' => 'Credenciais inválidas.',
         ], 401);
     }
 
@@ -157,20 +140,14 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
-        if ($request->user()) {
-
-            $request->user()->currentAccessToken()->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Logout realizado com sucesso.'
-            ]);
-        }
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
-            'success' => false,
-            'message' => 'Erro ao se deslogar'
-        ], 401);
+            'success' => true,
+            'message' => 'Logout realizado com sucesso.',
+        ]);
     }
 
     public function delete(User $user)
